@@ -1,0 +1,17 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: php-actions/composer@v6
+      - uses: php-actions/phpunit@v3
+        with:
+          php_version: 8.2
+          version: 10
+          bootstrap: './vendor/autoload.php'
+          args: '--testdox ./tests/'

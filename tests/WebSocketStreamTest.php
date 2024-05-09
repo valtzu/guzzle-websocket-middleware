@@ -34,6 +34,9 @@ class WebSocketStreamTest extends TestCase
         $server->close();
     }
 
+    /**
+     * @return array{0: WebSocketStream, 1: WebSocketStream}
+     */
     private function createWebSocketPair(): array
     {
         $randomizer = new Randomizer(new Engine\Mt19937());

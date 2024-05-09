@@ -1,8 +1,14 @@
-### Connect to WebSocket endpoint with Guzzle HTTP client
+## Connect to WebSocket endpoints with Guzzle HTTP client
 
-**NOTE:** Only `StreamHandler` supported (so no `CurlHandler`!).
+**NOTE:** Only `StreamHandler` supported (so not `CurlHandler`!).
 
----
+### Installation
+
+```
+composer install valtzu/guzzle-websocket-middleware
+```
+
+### Usage
 
 Guzzle's `synchronous` option is used to configure the stream blocking option.
 
