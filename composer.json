@@ -1,0 +1,20 @@
+{
+    "name": "valtzu/guzzle-websocket-middleware",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Valtzu\\WebSocketMiddleware\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Valtzu\\WebSocketMiddleware\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "guzzlehttp/guzzle": "^7.7"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.3"
+    }
+}
