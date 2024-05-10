@@ -39,7 +39,7 @@ $handshakeResponse = $guzzle->requestAsync('GET', 'wss://ws.postman-echo.com/raw
 $ws = $handshakeResponse->getBody();
 
 $ws->write("Hello world");
-$helloWorld = $ws->read(100); // Here you may return empty string
+$helloWorld = $ws->read(100); // Here you may get an empty string if data wasn't received yet
 ```
 
 #### Connection upkeep / ping-pong
