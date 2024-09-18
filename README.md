@@ -24,7 +24,7 @@ $handshakeResponse = $guzzle->request('GET', 'wss://ws.postman-echo.com/raw');
 $ws = $handshakeResponse->getBody();
 
 $ws->write("Hello world");
-$helloWorld = $ws->read(100); // This will block until the reply frame is received
+$helloWorld = $ws->read(); // This will block until the reply frame is received
 ```
 
 #### Asynchronous usage
@@ -39,7 +39,7 @@ $handshakeResponse = $guzzle->requestAsync('GET', 'wss://ws.postman-echo.com/raw
 $ws = $handshakeResponse->getBody();
 
 $ws->write("Hello world");
-$helloWorld = $ws->read(100); // Here you may get an empty string if data wasn't received yet
+$helloWorld = $ws->read(); // Here you may get an empty string if data wasn't received yet
 ```
 
 #### Connection upkeep / ping-pong

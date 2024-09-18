@@ -30,6 +30,8 @@ class PostmanEchoServiceTest extends TestCase
         $this->assertSame("lo", $ws->read(2));
         $this->assertSame(6, $ws->write("Worlds"));
         $this->assertSame("Worlds", $ws->read(128));
+        $this->assertSame(3, $ws->write("eof"));
+        $this->assertSame("eof", $ws->read());
         $ws->close();
     }
 
@@ -54,6 +56,12 @@ class PostmanEchoServiceTest extends TestCase
         $this->assertSame(6, $asyncWs->write("Worlds"));
         sleep(1);
         $this->assertSame("Worlds", $asyncWs->read(128));
+        $this->assertSame(3, $asyncWs->write("eof"));
+        $time = microtime(true) + 5.0;
+        while (!($message = $asyncWs->read()) && microtime(true) < $time) {
+            usleep(100);
+        }
+        $this->assertSame('eof', $message, 'Timed out while waiting for eof');
         $asyncWs->close();
     }
 }

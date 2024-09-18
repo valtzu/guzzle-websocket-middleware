@@ -90,8 +90,10 @@ readonly class WebSocketStream implements StreamInterface
         return $this->connection->isReadable();
     }
 
-    public function read(int $length): string
+    public function read(?int $length = null): string
     {
+        $length ??= ($this->buffer->getMetadata('hwm') - $this->buffer->getSize());
+
         if ($length > 0 && $this->buffer->getSize() >= $length) {
             return $this->buffer->read($length);
         }
@@ -129,7 +131,7 @@ readonly class WebSocketStream implements StreamInterface
 
     public function getContents(): string
     {
-        return $this->connection->getContents();
+        return $this->read();
     }
 
     public function getMetadata(?string $key = null)
