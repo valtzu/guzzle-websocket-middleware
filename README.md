@@ -53,3 +53,9 @@ It's also possible to manually send a ping – however, it does not wait for the
 ```php
 $ws->ping();
 ```
+
+### Contributing
+
+1. If you have an issue with package, or you have a feature request, please open an issue
+1. If you want to contribute code, you may submit a Pull Request. Just remember to add tests.
+   
