@@ -7,6 +7,7 @@ use GuzzleHttp\Psr7\Stream;
 use Psr\Http\Message\StreamInterface;
 use Random\Randomizer;
 use RuntimeException;
+use SplQueue;
 
 readonly class WebSocketStream implements StreamInterface
 {
@@ -15,6 +16,7 @@ readonly class WebSocketStream implements StreamInterface
         array $options = [],
         private Randomizer $randomizer = new Randomizer(),
         private BufferStream $buffer = new BufferStream(),
+        private SplQueue $bufferedLengths = new SplQueue(),
     ) {
         if ($connection instanceof Stream) {
             (function (bool $blocking) {
@@ -34,7 +36,6 @@ readonly class WebSocketStream implements StreamInterface
         // We attempt a clean close, but don't fail if it causes an error
         try {
             $this->send("\x08", "\x03\xE9"); // close with going-away status
-            $this->read(2);
         } catch (RuntimeException) {}
 
         $this->connection->close();
@@ -94,6 +95,15 @@ readonly class WebSocketStream implements StreamInterface
     {
         $length ??= ($this->buffer->getMetadata('hwm') - $this->buffer->getSize());
 
+        if ($length > 0 && !$this->bufferedLengths->isEmpty()) {
+            $currentMessageLength = $this->bufferedLengths->shift();
+            if ($length >= $currentMessageLength) {
+                $length = $currentMessageLength;
+            } else {
+                $this->bufferedLengths->unshift($currentMessageLength - $length);
+            }
+        }
+
         if ($length > 0 && $this->buffer->getSize() >= $length) {
             return $this->buffer->read($length);
         }
@@ -125,6 +135,9 @@ readonly class WebSocketStream implements StreamInterface
         } while ($opcode === "\x09" || !in_array($opcode, ["\1", "\2"]) && $blocking);
 
         $this->buffer->write($payload);
+        if (($remainingLength = strlen($payload) - $length) > 0) {
+            $this->bufferedLengths->enqueue($remainingLength);
+        }
 
         return $this->buffer->read($length);
     }

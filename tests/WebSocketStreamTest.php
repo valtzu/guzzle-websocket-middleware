@@ -35,6 +35,24 @@ class WebSocketStreamTest extends TestCase
     }
 
     /**
+     * @see https://github.com/valtzu/guzzle-websocket-middleware/issues/2
+     */
+    #[Test]
+    public function multipleMessagesInBuffer()
+    {
+        [$server, $client] = $this->createWebSocketPair(sync: true);
+
+        $this->assertSame(5, $server->write('Hello'));
+        $this->assertSame(5, $server->write('World'));
+        $client->read(0);
+        $this->assertSame('Hello', $client->read());
+        $this->assertSame('World', $client->read());
+
+        $client->close();
+        $server->close();
+    }
+
+    /**
      * @return array{0: WebSocketStream, 1: WebSocketStream}
      */
     private function createWebSocketPair(bool $sync): array
