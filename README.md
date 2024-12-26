@@ -16,7 +16,7 @@ Guzzle's `synchronous` option is used to configure the stream blocking option.
 
 ```php
 $handlerStack = new HandlerStack(new StreamHandler());
-$handlerStack->push(new WebSocketMiddleware());
+$handlerStack->unshift(new WebSocketMiddleware());
 
 $guzzle = new Client(['handler' => $handlerStack]);
 
@@ -31,7 +31,7 @@ $helloWorld = $ws->read(); // This will block until the reply frame is received
 
 ```php
 $handlerStack = new HandlerStack(new StreamHandler());
-$handlerStack->push(new WebSocketMiddleware());
+$handlerStack->unshift(new WebSocketMiddleware());
 
 $guzzle = new Client(['handler' => $handlerStack]);
 
@@ -58,4 +58,3 @@ $ws->ping();
 
 1. If you have an issue with package, or you have a feature request, please open an issue
 1. If you want to contribute code, you may submit a Pull Request. Just remember to add tests.
-   
