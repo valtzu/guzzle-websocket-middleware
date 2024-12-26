@@ -14,7 +14,7 @@ class WebSocketStreamTest extends TestCase
     #[Test]
     public function synchronousReadWrite()
     {
-        [$server, $client] = $this->createWebSocketPair();
+        [$server, $client] = $this->createWebSocketPair(sync: true);
 
         $server->write('Hello');
         $this->assertSame('Hello', $client->read(5));
@@ -23,7 +23,7 @@ class WebSocketStreamTest extends TestCase
     #[Test]
     public function asynchronousReadWrite()
     {
-        [$server, $client] = $this->createWebSocketPair();
+        [$server, $client] = $this->createWebSocketPair(sync: false);
 
         $client->ping();
         $client->write('Hello');
@@ -37,10 +37,13 @@ class WebSocketStreamTest extends TestCase
     /**
      * @return array{0: WebSocketStream, 1: WebSocketStream}
      */
-    private function createWebSocketPair(): array
+    private function createWebSocketPair(bool $sync): array
     {
         $randomizer = new Randomizer(new Engine\Mt19937());
 
-        return array_map(fn ($s) => new WebSocketStream(new Stream($s), ['synchronous' => true], $randomizer), stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP));
+        $socketPair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
+        array_walk($socketPair, fn ($socket) => stream_set_timeout($socket, 1));
+
+        return array_map(fn ($s) => new WebSocketStream(new Stream($s), ['synchronous' => $sync], $randomizer), $socketPair);
     }
 }
