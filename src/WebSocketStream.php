@@ -58,7 +58,7 @@ readonly class WebSocketStream implements StreamInterface
 
     public function eof(): bool
     {
-        return $this->connection->eof();
+        return $this->connection->eof() && $this->buffer->eof();
     }
 
     public function isSeekable(): bool
