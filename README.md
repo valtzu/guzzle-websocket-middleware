@@ -5,7 +5,7 @@
 ### Installation
 
 ```
-composer install valtzu/guzzle-websocket-middleware
+composer require valtzu/guzzle-websocket-middleware
 ```
 
 ### Usage
